@@ -1,0 +1,8 @@
+server:
+  port: 9487
+okta:
+  oauth2:
+    audience: api://default
+    issuer: https://dev-16861136.okta.com/oauth2/default
+#    clientId: 0oa6bik9fpFqd863K5d7
+#    clientSecret: OPd2ztVoD9FsVknKJ1_DRtERuUjilLRBUozfV1JS
