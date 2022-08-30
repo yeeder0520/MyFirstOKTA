@@ -1,12 +1,12 @@
 package com.example.okta.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * 測試OKTA的API Controller
@@ -18,6 +18,17 @@ import java.security.Principal;
 @RestController
 @Slf4j
 public class TestController {
+
+    @GetMapping("/api/hello")
+    public String anon() {
+        return "(凸￣ 3￣)凸(凸￣ 3￣)凸";
+    }
+
+    @GetMapping("/api/whoami")
+    public Map<String, Object> whoami(Authentication authentication) {
+        // return information about the token
+        return (Map<String, Object>) authentication.getDetails();
+    }
 
     @GetMapping("/")
     public String logout(Principal principal) {
