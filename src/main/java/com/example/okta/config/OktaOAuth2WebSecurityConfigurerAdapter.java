@@ -1,8 +1,10 @@
 package com.example.okta.config;
 
+import com.okta.spring.boot.oauth.Okta;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * 請求路徑配置
@@ -12,14 +14,28 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @since 2022/8/30 上午 11:37
  **/
 @Configuration
-class OktaOAuth2WebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+class OAuth2ResourceServerSecurityConfiguration {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain customJwtSecurityChain(HttpSecurity http) throws Exception {
         /*一切都需要授權*/
-        RequireAuthorizationForEverything(http);
+//        RequireAuthorizationForEverything(http);
         /*允許匿名訪問特定路由*/
 //        AllowAnonymousAccessForSpecificRoutes(http);
+//        Okta.configureResourceServer401ResponseBody(http);
+        return http.authorizeRequests(auth -> {
+                    try {
+                        auth.antMatchers("/")
+                                .hasAuthority("SCOPE_okta.myAccount.customAuthenticator.manage")
+                                .anyRequest()
+                                .authenticated()
+                                .and()
+                                .oauth2ResourceServer().jwt();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .build();
     }
 
     /**
@@ -30,7 +46,10 @@ class OktaOAuth2WebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
      */
     private void RequireAuthorizationForEverything(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest().authenticated() // All requests require authentication
+                // allow anonymous access to the root page
+                .antMatchers("/").hasAuthority("SCOPE_okta.myAccount.customAuthenticator.manage")
+                // all other requests
+                .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer().jwt(); // validates access tokens as JWTs
     }
@@ -48,5 +67,6 @@ class OktaOAuth2WebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
                 .and()
                 .oauth2ResourceServer().jwt();
     }
+
 }
 

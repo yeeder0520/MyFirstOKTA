@@ -4,5 +4,5 @@ okta:
   oauth2:
 #    audience: api://default
     issuer: https://dev-16861136.okta.com/oauth2/default
-    clientId: 0oa6biuxayViNAP135d7
-    clientSecret: whSZfE7j9C5g0SD_pc4yBmpB5qZvDBRQ0iCMYl3f
+    clientId: 0oa6bik9fpFqd863K5d7
+    clientSecret: OPd2ztVoD9FsVknKJ1_DRtERuUjilLRBUozfV1JS
